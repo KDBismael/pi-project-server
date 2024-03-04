@@ -17,7 +17,6 @@ export class PredictService {
 
     public async predict(body:predictDto,image:Express.Multer.File) :Promise<any> {
         try {
-            console.log(body)
             const model=await this.model.loadModel();
             // const imagePath = 'https://drive.google.com/file/d/1tLKW7TAfTy6k0hfMfOehslNEe2GkCILh/view?usp=sharing';
             // const img = await loadImage(imagePath);
@@ -32,14 +31,16 @@ export class PredictService {
                 // .arraySync()
                 predictions.map(tensor => tensor.print());
                 // console.log('Probabilities:', probabilities);
-              } else {
+            } else {
                 // If predictions is a single tensor
                 predictions.print();
+                const predictionsArray = Array.from(predictions.dataSync());
+                const maxIndex = predictionsArray.indexOf(Math.max(...predictionsArray));
+                console.log('Predicted Class Index:', maxIndex);
                 // console.log('Probabilities:', probabilities);
-                this.patient.createPatient(image,body)
+                return await this.patient.createPatient(image,body,maxIndex)
             }
         } catch (error) {
-            console.log("--------");
             console.log(error);
         }
         // img.onload = async function () {

@@ -9,12 +9,15 @@ export class PatientService {
         @InjectModel(Patient.name) private patientModel: Model<PatientDocument>,
     ){}
 
-    async createPatient(image: any,body:any): Promise<any> {   
+    async createPatient(image: any,body:any,label:number): Promise<any> {   
         const newUser = new this.patientModel({
             ...body,
+            label,
             image:image.buffer,
         });
-        return newUser.save();
+        const user=newUser.save()
+        console.log(user);
+        return user;
     }
 
     async findAll(query: any): Promise<any> {

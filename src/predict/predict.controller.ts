@@ -14,8 +14,10 @@ export class PredictController {
     @Post('predict')
     @UseInterceptors(FileInterceptor('image'))
     async predict(@UploadedFile() image: Express.Multer.File, @Body() body:predictDto, @Res() res: Response): Promise<any> {
-        this.predictService.predict(body,image)
-        return res.status(HttpStatus.OK).json({status:"OK"}) ;
+        const patientData= await this.predictService.predict(body,image)
+        return res.status(HttpStatus.OK).json({status:"OK",data:{
+            ...patientData["_doc"]
+        }}) ;
     }
 
     @Get('all')
