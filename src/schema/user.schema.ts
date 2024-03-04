@@ -9,8 +9,6 @@ export class User {
   @Prop()
   lastName: string;
   @Prop()
-  type: string;
-  @Prop()
   title?: string;
   @Prop({ lowercase: true, unique: true })
   email: string;

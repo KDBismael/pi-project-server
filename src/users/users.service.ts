@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 import { AuthService } from 'src/auth/auth.service';
-import { User, UserDocument } from 'src/schema/user-schema';
+import { Patient } from 'src/schema/patient.schema';
+import { User, UserDocument } from 'src/schema/user.schema';
 
 @Injectable()
 export class UsersService {
     constructor(
+        @Inject(forwardRef(() => AuthService))
         private AuthService:AuthService,
         @InjectModel(User.name) private userModel: Model<UserDocument>,
+        @InjectModel(Patient.name) private patientModel: Model<UserDocument>,
     ){}
 
     async findOne(query: any): Promise<any> {
@@ -30,6 +33,6 @@ export class UsersService {
     }
     
     async findOneAndRemove(query: any): Promise<any> {
-        return this.userModel.findOneAndRemove(query);
+        return this.userModel.findByIdAndDelete(query);
     }
 }

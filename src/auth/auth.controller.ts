@@ -1,7 +1,8 @@
 import { Controller,Post,Request,ConflictException,UseGuards } from '@nestjs/common';
-import { AuthGuard } from ‘@nestjs/passport’;
+import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
+import { LocalAuthGuard } from './guard/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -27,7 +28,7 @@ export class AuthController {
     }
 
     @Post('signin')
-    @UseGuards(AuthGuard('local'))
+    @UseGuards(LocalAuthGuard)
     async login(@Request() req): Promise<any> {
         try {
             return await this.authService.generateJwtToken(req.user);

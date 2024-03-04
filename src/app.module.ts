@@ -8,10 +8,16 @@ import { PredictService } from './predict/predict.service';
 import { PredictController } from './predict/predict.controller';
 import { PredictModule } from './predict/predict.module';
 import { ModelService } from './model/model.service';
+import { JwtModule } from '@nestjs/jwt';
 
-// UsersModule,MongooseModule.forRoot('mongodb://localhost:27017/pi')
+
 @Module({
-  imports: [AuthModule, PredictModule],
+  imports: [
+    AuthModule,
+    PredictModule,
+    UsersModule,
+    MongooseModule.forRoot('mongodb://localhost:27017/pi'),
+  ],
   controllers: [AppController, PredictController],
   providers: [AppService, PredictService, ModelService],
 })
