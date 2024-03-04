@@ -5,33 +5,38 @@ import * as tf from '@tensorflow/tfjs';
 import * as tfnode from '@tensorflow/tfjs-node';
 import { loadImage } from 'canvas';
 import * as sharp from 'sharp';
+import { json } from 'express';
+import { PatientService } from 'src/patient/patient.service';
 
 @Injectable()
 export class PredictService {
-    constructor(private model:ModelService){}
+    constructor(
+        private model:ModelService,
+        private patient:PatientService
+    ){}
 
-    public async predict(body:predictDto) :Promise<string> {
+    public async predict(body:predictDto,image:Express.Multer.File) :Promise<any> {
         try {
-            console.log("eee")
+            console.log(body)
             const model=await this.model.loadModel();
-            console.log("eeezzzz")
-            const imagePath = 'https://drive.google.com/file/d/1tLKW7TAfTy6k0hfMfOehslNEe2GkCILh/view?usp=sharing';
+            // const imagePath = 'https://drive.google.com/file/d/1tLKW7TAfTy6k0hfMfOehslNEe2GkCILh/view?usp=sharing';
             // const img = await loadImage(imagePath);
             // img.src = imagePath;
             let test_normal='src/img_946797649386887230.jpg';
             let test_unknown="src/img_9218954439959078387.jpg";
             let test="src/img_1005556732793955351.jpg";
-            const a=await this.loadImageAndPreprocess(test)
+            const a=await this.loadImageAndPreprocess(test,image)
             // console.log(model)
             const predictions = model.predict(a);
             if (Array.isArray(predictions)) {
                 // .arraySync()
-                const probabilities = predictions.map(tensor => tensor.print());
-                console.log('Probabilities:', probabilities);
+                predictions.map(tensor => tensor.print());
+                // console.log('Probabilities:', probabilities);
               } else {
                 // If predictions is a single tensor
-                const probabilities = predictions.print();
-                console.log('Probabilities:', probabilities);
+                predictions.print();
+                // console.log('Probabilities:', probabilities);
+                this.patient.createPatient(image,body)
             }
         } catch (error) {
             console.log("--------");
@@ -59,13 +64,13 @@ export class PredictService {
         // .indexOf(Math.max(...predictions));
         // console.log('Predicted Class Index:', predictedClassIndex);
         // const prediction= model.predict(tf.image(),{batchSize: 0})
-        return  body.imageUrl.toString();
     }
-    public async  loadImageAndPreprocess(path: string): Promise<tf.Tensor3D> {
+    public async  loadImageAndPreprocess(path?: string,image?:Express.Multer.File): Promise<tf.Tensor3D> {
         // Load image using sharp
-        const imageBuffer = await sharp(path).toBuffer();
+        // const imageBuffer = await sharp(path).toBuffer();
+        const imageBuffer = image.buffer;
         // Decode image using TensorFlow.js Node.js bindings
-        const pixels = tfnode.node.decodeImage(imageBuffer);
+        const pixels = tfnode.node.decodeImage(imageBuffer,3);
 
         // Resize the image to match the expected input shape [224, 224]
         const resizedImage = tf.image.resizeBilinear(pixels, [224, 224]);

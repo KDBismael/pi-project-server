@@ -12,7 +12,7 @@ export class Patient {
   birthDate: string;
   @Prop({ type: Buffer, required: true })
   image: Buffer;
-  @Prop({required:false})
+  @Prop({required:false,default:null})
   label: number;
 }
 

@@ -11,7 +11,6 @@ export class UsersService {
         @Inject(forwardRef(() => AuthService))
         private AuthService:AuthService,
         @InjectModel(User.name) private userModel: Model<UserDocument>,
-        @InjectModel(Patient.name) private patientModel: Model<UserDocument>,
     ){}
 
     async findOne(query: any): Promise<any> {
@@ -34,5 +33,5 @@ export class UsersService {
     
     async findOneAndRemove(query: any): Promise<any> {
         return this.userModel.findByIdAndDelete(query);
-    }
+    }    
 }

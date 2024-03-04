@@ -1,17 +1,21 @@
-import { Controller, Post, Get,Body, UseGuards } from '@nestjs/common';
+import { Controller, Post, Get,Body, UseGuards, UseInterceptors, UploadedFile, Res, HttpStatus } from '@nestjs/common';
+import { Response } from 'express';
 import { PredictService } from './predict.service';
 import { predictDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('predictions')
 export class PredictController {
     constructor(private predictService:PredictService ){}
 
-    @UseGuards(JwtAuthGuard)
+    // @UseGuards(JwtAuthGuard)
     @Post('predict')
-    async predict( @Body() body:predictDto): Promise<string> {
-        return  this.predictService.predict(body) ;
+    @UseInterceptors(FileInterceptor('image'))
+    async predict(@UploadedFile() image: Express.Multer.File, @Body() body:predictDto, @Res() res: Response): Promise<any> {
+        this.predictService.predict(body,image)
+        return res.status(HttpStatus.OK).json({status:"OK"}) ;
     }
 
     @Get('all')

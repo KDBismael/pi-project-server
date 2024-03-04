@@ -9,7 +9,6 @@ import { Patient, PatientSchema } from 'src/schema/patient.schema';
 @Module({
   imports:[
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    MongooseModule.forFeature([{ name: Patient.name, schema: PatientSchema }]),
     forwardRef(() => AuthModule),
   ],
   providers: [UsersService, AuthService],

@@ -8,7 +8,8 @@ import { PredictService } from './predict/predict.service';
 import { PredictController } from './predict/predict.controller';
 import { PredictModule } from './predict/predict.module';
 import { ModelService } from './model/model.service';
-import { JwtModule } from '@nestjs/jwt';
+import { PatientService } from './patient/patient.service';
+import { Patient, PatientSchema } from './schema/patient.schema';
 
 
 @Module({
@@ -17,8 +18,9 @@ import { JwtModule } from '@nestjs/jwt';
     PredictModule,
     UsersModule,
     MongooseModule.forRoot('mongodb://localhost:27017/pi'),
+    MongooseModule.forFeature([{ name: Patient.name, schema: PatientSchema }]),
   ],
   controllers: [AppController, PredictController],
-  providers: [AppService, PredictService, ModelService],
+  providers: [AppService, PredictService, ModelService, PatientService],
 })
 export class AppModule {}

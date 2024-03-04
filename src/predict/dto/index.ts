@@ -1,4 +1,6 @@
 export class predictDto{
-    imageUrl:string;
-    name:string;
+    firstName: string;
+    lastName: string;
+    birthDate: string;
+    image: Buffer;
 }
