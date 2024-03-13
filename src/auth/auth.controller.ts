@@ -30,8 +30,9 @@ export class AuthController {
     @Post('signin')
     @UseGuards(LocalAuthGuard)
     async login(@Request() req): Promise<any> {
+        console.log(req.body.user);
         try {
-            return await this.authService.generateJwtToken(req.user);
+            return await this.authService.generateJwtToken(req.body.user);
         } catch (error) {
             throw error;
         }
